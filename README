@@ -1,0 +1,16 @@
+Copy some of the functionality of python's progressbar module to Go.
+(http://code.google.com/p/python-progressbar/)
+
+Usage:
+
+p := NewProgressBar(100)
+p.Start()
+var i int64
+for i = 0; i < 100; i++ {
+	//Do Something slow
+	p.Update(i+1)
+}
+
+Progressbars can be customised with a variety of widgets
+
+(I am still learning with Go)
