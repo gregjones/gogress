@@ -2,26 +2,27 @@ package gogress
 
 import (
 	. "launchpad.net/gocheck"
-	"os"
 	"testing"
 )
 
 type writer struct {
-	Count int
+	Count  int
 	Writes [][]byte
 }
 
-func (w *writer) Write(p []byte) (int, os.Error) {
+func (w *writer) Write(p []byte) (int, error) {
 	w.Count++
 	w.Writes = append(w.Writes, p)
 	return len(p), nil
 }
 
-func Test(t *testing.T) { 
+func Test(t *testing.T) {
 	DefaultWriter = new(writer)
-	TestingT(t) 
+	TestingT(t)
 }
+
 type S struct{}
+
 var _ = Suite(&S{})
 
 func (s *S) TestDefault(c *C) {
@@ -29,14 +30,14 @@ func (s *S) TestDefault(c *C) {
 	p.Start()
 	var i int64
 	for i = 0; i < 100; i++ {
-		p.Update(i+1)
+		p.Update(i + 1)
 	}
 }
 
 func (s *S) TestPercentage(c *C) {
 	w := NewPercentageWidget()
 	b := new(writer)
-	p := &ProgressBar{Max: 100, Fd: b, Widgets:[]Widget{w}}
+	p := &ProgressBar{Max: 100, Fd: b, Widgets: []Widget{w}}
 	p.Start()
 	c.Assert(b.Count, Equals, 1)
 
@@ -47,7 +48,7 @@ func (s *S) TestPercentage(c *C) {
 	c.Assert(b.Writes[1], Equals, []byte{' ', ' ', '1', '%', ' ', '\r'})
 	var i int64
 	for i = 0; i < 15; i++ {
-		p.Update(i+2)
+		p.Update(i + 2)
 	}
 	c.Assert(b.Count, Equals, 17)
 	c.Assert(b.Writes[16], Equals, []byte{' ', '1', '6', '%', ' ', '\r'})
